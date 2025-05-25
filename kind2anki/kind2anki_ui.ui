@@ -164,10 +164,20 @@
           </item>
          </widget>
         </item>
-        <item row="0" column="1" colspan="2">
+        <item row="0" column="1">
          <widget class="QCheckBox" name="doTranslate">
           <property name="text">
            <string>Translate words</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QCheckBox" name="includeDictionary">
+          <property name="text">
+           <string>Include dictionary definition</string>
           </property>
           <property name="checked">
            <bool>true</bool>

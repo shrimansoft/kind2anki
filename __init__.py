@@ -3,9 +3,8 @@
 from aqt.deckchooser import DeckChooser
 from aqt import mw
 from aqt.utils import showInfo, getFile, showText
-from aqt.qt import *
+from aqt.qt import *  # This imports QThread, pyqtSignal, QDialog, QPushButton, etc.
 from anki.importing import TextImporter
-from PyQt5.QtCore import QThread, pyqtSignal
 
 # some python libs
 import os
@@ -17,6 +16,9 @@ import time
 import string
 from sys import platform
 import getpass
+
+# Simple translation function for compatibility
+_ = lambda text: text
 
 sys.path.insert(0, os.path.join(mw.pm.addonFolder(), "kind2anki"))
 sys.path.insert(0, os.path.join(mw.pm.addonFolder(), "kind2anki", "kind2anki"))
@@ -76,7 +78,7 @@ def startProgressBar(dialog, nth):
 class Kind2AnkiDialog(QDialog):
     def __init__(self):
         global mw
-        QDialog.__init__(self, mw, Qt.Window)
+        QDialog.__init__(self, mw, Qt.WindowType.Window)
         self.mw = mw
         self.frm = kind2anki_ui.Ui_kind2ankiDialog()
         self.frm.setupUi(self)
@@ -86,7 +88,7 @@ class Kind2AnkiDialog(QDialog):
         self.t.startProgress.connect(startProgressBar)
 
         b = QPushButton(_("Import"))
-        self.frm.buttonBox.addButton(b, QDialogButtonBox.AcceptRole)
+        self.frm.buttonBox.addButton(b, QDialogButtonBox.ButtonRole.AcceptRole)
         self.deck = DeckChooser(
             self.mw, self.frm.deckArea, label=False)
         self.frm.importMode.setCurrentIndex(
@@ -95,7 +97,7 @@ class Kind2AnkiDialog(QDialog):
         self.daysSinceLastRun = self.getDaysSinceLastRun()
         self.frm.importDays.setValue(self.daysSinceLastRun)
 
-        self.exec_()
+        self.exec()
 
     def accept(self):
         try:
@@ -106,6 +108,7 @@ class Kind2AnkiDialog(QDialog):
             includeUsage = self.frm.includeUsage.isChecked()
             doTranslate = self.frm.doTranslate.isChecked()
             importDays = self.frm.importDays.value()
+            includeDictionary = self.frm.includeDictionary.isChecked()
 
             #if doTranslate:
             #    showInfo("Translating words from database, it can take a while...")
@@ -114,7 +117,7 @@ class Kind2AnkiDialog(QDialog):
 
             self.t.dialog = self
             self.t.args = (
-                db_path, target_language, includeUsage, doTranslate, importDays
+                db_path, target_language, includeUsage, doTranslate, importDays, includeDictionary
                 )
 
             self.t.start()
